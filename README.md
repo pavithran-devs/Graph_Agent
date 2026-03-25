@@ -1,6 +1,6 @@
-# 🛡️ Dodge AI: Supply Chain Intelligence Engine
+# 🛡️ Supply Chain Intelligence Engine
 
-**Dodge AI** is a high-performance, full-stack **Graph-RAG** (Retrieval-Augmented Generation) application designed for deep forensic analysis of "Order-to-Cash" supply chain flows. It combines an embedded graph database with Large Language Models (LLMs) to provide real-time, natural language insights into complex logistical networks.
+**Supply Chain Intelligence Engine** is a high-performance, full-stack **Graph-RAG** (Retrieval-Augmented Generation) application designed for deep forensic analysis of "Order-to-Cash" supply chain flows. It combines an embedded graph database with Large Language Models (LLMs) to provide real-time, natural language insights into complex logistical networks.
 
 ---
 
@@ -82,5 +82,3 @@ docker-compose up -d --build
 ## 🛡️ Analyst Guardrails
 
 This engine is strictly tuned for **Supply Chain Forensic Analysis**. It utilizes a proprietary system prompt to ensure it refuses off-topic requests (poems, general code, etc.) and focuses exclusively on the logic contained within the graph dataset.
-
-*"Dodge AI: Turning complex logisitcs data into actionable intelligence."*
