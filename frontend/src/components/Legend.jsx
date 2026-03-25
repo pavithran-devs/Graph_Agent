@@ -3,22 +3,21 @@ import { GROUP_STYLES } from '../lib/graphUtils';
 
 const LEGEND_ITEMS = [
     'Customer', 'Order', 'Delivery', 'Billing',
-    'Product', 'ProductGroup', 'ProductType',
-    'Address', 'CustomerGroup',
+    'Product', 'Address'
 ];
 
 export default function Legend() {
     return (
-        <div className="absolute bottom-4 left-4 z-30 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl shadow-card px-3 py-2.5">
-            <p className="text-[10px] uppercase font-semibold text-gray-400 tracking-widest mb-1.5">Legend</p>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <div className="absolute top-6 right-6 z-30 bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl px-4 py-3 min-w-[140px] animate-fadeIn">
+            <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.2em] mb-3">Classification</p>
+            <div className="flex flex-col gap-2.5">
                 {LEGEND_ITEMS.map(g => (
-                    <div key={g} className="flex items-center gap-1.5">
+                    <div key={g} className="flex items-center justify-between gap-4">
+                        <span className="text-[11px] font-bold text-slate-600">{g}</span>
                         <span
-                            className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                            className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm"
                             style={{ background: GROUP_STYLES[g]?.bg ?? '#94a3b8' }}
                         />
-                        <span className="text-[11px] text-gray-600">{g}</span>
                     </div>
                 ))}
             </div>
