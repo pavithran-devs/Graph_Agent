@@ -1,152 +1,86 @@
-# Supply Chain Graph-RAG Agent
+# 🛡️ Dodge AI: Supply Chain Intelligence Engine
 
-**Supply Chain Graph-RAG Agent** is a high-performance, zero-setup Supply Chain Traceability tool built for senior Forward Deployed Engineers (FDEs). It leverages a **Graph-RAG** (Retrieval-Augmented Generation) approach to analyze complex Order-to-Cash flows using natural language.
-
-
----
-
-## Key Features
-
-- **High-Speed Analytical Graph Lake**: Uses **DuckDB** for vectorized triple-store processing, enabling millisecond-latency graph traversals on Windows.
-- **Context-Aware Memory Engine**: Resolves ambiguous pronouns (*"it," "its," "their"*) by maintaining a conversation buffer and tracking recently discussed entities.
-- **Interactive Graph Reflection**: A premium **Vis.js** frontend that automatically zooms, focuses, and applies persistent glowing highlights to nodes in the current "Active Context."
-- **Anomaly Detection**: Advanced logic to identify **Orphaned Orders** (orders with no fulfillment) and stalled logistics flows.
-- **Community Clustering**: Group-level analysis of customers to identify demographics experiencing high delivery failure rates.
-- **Zero-Setup Portability**: 100% compatible with Windows and Python 3.14+. Requires only a single file (`supply_chain.db`).
+**Dodge AI** is a high-performance, full-stack **Graph-RAG** (Retrieval-Augmented Generation) application designed for deep forensic analysis of "Order-to-Cash" supply chain flows. It combines an embedded graph database with Large Language Models (LLMs) to provide real-time, natural language insights into complex logistical networks.
 
 ---
 
-## 🚀 Hosting & Deployment
+## ⚡ Core Pillars
 
-The application is container-ready and follows production best practices (configurable ports, multi-stage builds).
-
-### Option 1: Docker (Cloud VM / Self-Hosted)
-
-We provide a multi-stage `Dockerfile` that builds the React frontend and packages it with the FastAPI backend.
-
-1.  **Build the Image**:
-    ```bash
-    docker build -t supply-chain-agent .
-    ```
-
-2.  **Run with Environment Variables**:
-    ```bash
-    docker run -p 8000:8000 -e GROQ_KEY="your_key" supply-chain-agent
-    ```
-
-3.  **Using Docker Compose**:
-    ```bash
-    # Create a .env file with GROQ_KEY
-    docker-compose up --build
-    ```
-
-### Option 2: Platform-as-a-Service (Render / Railway / Fly.io)
-
-Most platforms will automatically detect the Python application.
-
-1.  **Root Directory**: Point to the root where `main.py` exists.
-2.  **Build Command**:
-    ```bash
-    # Install dependencies + Build Frontend
-    pip install -r requirements.txt && cd frontend && npm install && npm run build
-    ```
-3.  **Start Command**:
-    ```bash
-    uvicorn main:app --host 0.0.0.0 --port $PORT
-    ```
-4.  **Environment Variables**: Ensure `GROQ_KEY` is set in the platform's dashboard.
+-   **Graph-RAG Architecture**: Merges the reasoning power of **Groq (Llama 3.3)** with the structural precision of a property graph.
+-   **Analytical Graph Lake**: Utilizes **DuckDB** for vectorized processing of supply chain triples, achieving sub-100ms query latency.
+-   **High-Fidelity Visualization**: Powered by **Cytoscape.js**, featuring a custom "Blue vs. Red" node convention for clear entity-to-metadata separation.
+-   **Premium Glassmorphism UI**: A production-grade dashboard built with **React** and **Tailwind CSS**, featuring frosted glass panels, live telemetry, and sidebar AI interaction.
+-   **Bidirectional Interaction**: Touch nodes on the graph to trigger AI forensic traces, or prompt the AI to have it automatically focus and zoom the map.
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗️ Technical Architecture
 
-- **Backend**: Python, FastAPI, Uvicorn
-- **AI/LLM**: Groq (Llama-3.3-70b-versatile)
-- **Database**: DuckDB (Embedded Property Graph)
-- **Frontend**: Vis.js, Tailwind CSS (Modern Glassmorphism UI)
-- **Data Engineering**: NetworkX (Modeling), Pandas (ETL)
+### **Backend Engine**
+-   **FastAPI**: High-performance asynchronous API layer.
+-   **DuckDB**: Embedded analytical database for zero-latency storage.
+-   **NetworkX**: Complex network modeling and relationship extraction.
+-   **Groq SDK**: Ultra-fast inference using Llama 3 models.
+
+### **Frontend Dashboard**
+-   **React 19 + Vite**: Modern, atomic component architecture.
+-   **Cytoscape.js**: Industrial-grade graph visualization engine.
+-   **Lucide Icons**: Clean, professional iconography.
+-   **Tailwind CSS**: Custom "Linear-style" design system with `backdrop-filter` support.
 
 ---
 
-## Folder Structure
+## 🚀 Deployment & Scaling
+
+The system is fully containerized and optimized for cloud environments like **AWS EC2**.
+
+### **Dockerized Workflow**
+We use a multi-stage `Dockerfile` to optimize image size and performance:
+1.  **Stage 1**: Builds the React frontend (Vite).
+2.  **Stage 2**: Packages the Python backend and serves the frontend assets via FastAPI.
 
 ```bash
-├── main.py              # FastAPI Backend & RAG Logic
-├── index.html           # Professional Side-by-Side Frontend
-├── memory_manager.py    # Context-Aware Memory Engine
+# Start the entire stack in one command
+docker-compose up -d --build
+```
+
+### **AWS Hosting Guide**
+*   **Instance**: t2.micro (Ubuntu 24.04).
+*   **Memory Management**: Configured with 2GB Swap space to handle heavy builds.
+*   **Networking**: Exposed on port `8000` via AWS Security Groups.
+
+---
+
+## 📂 Project Structure
+
+```bash
+├── main.py              # FastAPI Entry Point & RAG Logic
+├── db.py                # DuckDB & Graph Data Layer
+├── memory_manager.py    # Conversation & Context Buffer
+├── preprocessing.py     # CSV-to-Graph ETL Pipeline
 ├── graph_edges.csv      # Source Supply Chain Dataset
-├── supply_chain.db      # Persistent DuckDB Analytical Store
-├── .env                 # API Keys (GROQ_KEY)
-└── requirements.txt     # Project Dependencies
+├── Dockerfile           # Multi-stage Container Profile
+├── docker-compose.yml   # Production Orchestration
+└── frontend/            # React Application Source
+    ├── src/             
+    │   ├── components/  # Dashboard, Chat, Popups
+    │   └── lib/         # Cytoscape Utils & Logic
+    └── package.json     
 ```
 
 ---
 
-## Installation
+## 🎯 Sample Forensic Queries
 
-1. **Clone the Repository**:
-   ```bash
-   git clone <your-repo-url>
-   cd supply-chain-graph-agent
-   ```
-
-2. **Set Up Environment Variables**:
-   Create a `.env` file in the root directory and add your Groq API Key:
-   ```env
-   GROQ_KEY=gsk_your_api_key_here
-   ```
-
-3. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+-   *"Perform a full trace on Order_740506. Who is the customer and what is the billing status?"*
+-   *"Identify nodes with high degree centrality. Which products are most connected?"*
+-   *"Analyze the relationship between Customer_310000109 and Order_740510."*
+-   *"Are there any disconnected clusters or orphans in the graph?"*
 
 ---
 
-## Usage
+## 🛡️ Analyst Guardrails
 
-1. **Start the Backend**:
-   ```bash
-   python main.py
-   ```
-   *The system will automatically initialize the DuckDB store from `graph_edges.csv` on the first run.*
+This engine is strictly tuned for **Supply Chain Forensic Analysis**. It utilizes a proprietary system prompt to ensure it refuses off-topic requests (poems, general code, etc.) and focuses exclusively on the logic contained within the graph dataset.
 
-2. **Access the UI**:
-   Open your browser and navigate to:
-   **[http://localhost:8000](http://localhost:8000)**
-
-3. **Sample Investigation Prompts**:
-   - *"Analyze the internal structure of the graph. Show me the total count of Nodes and Relationships."*
-   - *"Find Order_740506. Who placed it and what is its fulfillment status?"*
-   - *"Are there any stalled flows or orphaned orders in the system?"*
-
----
-
-## API Details
-
-### `GET /graph-data`
-Returns the complete graph schema (Nodes & Edges) for Vis.js rendering.
-
-### `POST /ask`
-Processes natural language queries against the graph.
-- **Request Body**: `{"query": "Who is the customer for Order_740510?"}`
-- **Response**:
-  ```json
-  {
-    "answer": "The customer for Order_740510 is Customer_310000109.",
-    "focus_id": "Order_740510",
-    "path_ids": ["Order_740510", "Customer_310000109"],
-    "active_entities": ["Order_740510", "Customer_310000109"]
-  }
-  ```
-
----
-
-##  Guardrails
-
-This AI is strictly configured as a **Supply Chain Analyst**. It will refuse requests unrelated to the dataset (e.g., writing poems, stories, or off-topic technical advice) with the message:
-*"This system is designed to answer questions related to the provided dataset only."*
-
----
-
-
+*"Dodge AI: Turning complex logisitcs data into actionable intelligence."*
