@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Minimize2, Layers, ChevronRight, AlertCircle, Loader2,
   Search, Info, Database, Activity, Sparkles, Map,
-  Maximize2, Share2, Settings
+  Maximize2, Share2, Settings, ZoomIn, ZoomOut
 } from 'lucide-react';
 import GraphCanvas from './components/GraphCanvas.jsx';
 import ChatPanel from './components/ChatPanel.jsx';
