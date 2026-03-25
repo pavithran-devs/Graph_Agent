@@ -170,11 +170,21 @@ def ask(req: AskRequest):
     except Exception as e:
         return {"answer": f"Evaluation Error: {str(e)}", "focus_id": None, "path_ids": [], "active_entities": []}
 
-# Serve React app if it exists, otherwise fall back to index.html
+# Serve React app if it exists, otherwise fall back to root index.html
 if os.path.exists("frontend/dist"):
+    # Mount assets folder for bundled files
     app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
-    @app.get("/")
-    def index():
+    
+    # Catch-all to serve other static files (favicon, etc.) and handle SPA routing
+    @app.get("/{path:path}")
+    async def serve_frontend(path: str):
+        # Exclude API routes from catch-all if they weren't matched yet
+        if path in ["graph-data", "ask"]:
+             return None # Let FastAPI handle it via other routes
+             
+        file_path = os.path.join("frontend/dist", path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
         return FileResponse("frontend/dist/index.html")
 else:
     @app.get("/")
