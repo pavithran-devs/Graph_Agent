@@ -21,6 +21,7 @@ export default function App() {
   const [highlightIds, setHighlightIds] = useState([]);
 
   const chatRef = useRef(null);
+  const lastNodeId = useRef(null);
 
   const fetchGraph = useCallback(async () => {
     setLoading(true);
@@ -51,9 +52,14 @@ export default function App() {
   const handleNodeInteracted = useCallback((node) => {
     setSelectedNode(node);
     if (node && chatRef.current) {
+      if (lastNodeId.current === node.id) return; // Prevent spam
+      lastNodeId.current = node.id;
       chatRef.current.triggerQuery(`Dodge AI, summarize the trace for clinical entity: ${node.id}`);
+    } else {
+      lastNodeId.current = null;
     }
   }, []);
+
 
   return (
     <div className="flex h-screen bg-[#FDFDFD] text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900 overflow-hidden">

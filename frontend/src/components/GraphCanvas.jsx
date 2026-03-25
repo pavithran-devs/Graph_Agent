@@ -25,6 +25,9 @@ export default function GraphCanvas({ graphData, onNodeClick, showOverlay, focus
     const handleCyInit = useCallback((cy) => {
         cyRef.current = cy;
 
+        // Clean up any old listeners before adding new ones
+        cy.off('tap');
+
         cy.on('tap', 'node', (evt) => {
             const node = evt.target;
             const nodeId = node.id();
@@ -48,6 +51,7 @@ export default function GraphCanvas({ graphData, onNodeClick, showOverlay, focus
             }
         });
     }, [onNodeClick]);
+
 
     // Handle AI Focus & Highlighting
     useEffect(() => {
