@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { Send, Bot, Sparkles, User, ChevronRight, MessageSquare, Terminal } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
@@ -30,8 +30,8 @@ function Message({ msg }) {
             </div>
 
             <div className={`max-w-[85%] text-[14px] px-5 py-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap transition-all ${isUser
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 rounded-tr-none font-medium'
-                    : 'bg-white border border-slate-100 shadow-sm text-slate-700 rounded-tl-none'
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 rounded-tr-none font-medium'
+                : 'bg-white border border-slate-100 shadow-sm text-slate-700 rounded-tl-none'
                 }`}>
                 {msg.content}
             </div>
@@ -39,7 +39,7 @@ function Message({ msg }) {
     );
 }
 
-export default function ChatPanel({ onToggle }) {
+const ChatPanel = forwardRef(({ onToggle, onAiResponse }, ref) => {
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
@@ -50,14 +50,17 @@ export default function ChatPanel({ onToggle }) {
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
+    useImperativeHandle(ref, () => ({
+        triggerQuery: (q) => {
+            if (!loading) initiateMessage(q);
+        }
+    }));
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, loading]);
 
-    const sendMessage = async () => {
-        const query = input.trim();
-        if (!query || loading) return;
-        setInput('');
+    const initiateMessage = async (query) => {
         setMessages(prev => [...prev, { role: 'user', content: query }]);
         setLoading(true);
 
@@ -70,14 +73,22 @@ export default function ChatPanel({ onToggle }) {
             if (!res.ok) throw new Error(`Server error: ${res.status}`);
             const data = await res.json();
             setMessages(prev => [...prev, { role: 'assistant', content: data.answer }]);
+            if (onAiResponse) onAiResponse(data);
         } catch (err) {
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: `⚠️ System Interface Interrupted: ${err.message}. Ensure the backend is listening on localhost:8000.`,
+                content: `⚠️ System Interface Interrupted: ${err.message}.`,
             }]);
         } finally {
             setLoading(false);
         }
+    };
+
+    const sendMessage = () => {
+        const query = input.trim();
+        if (!query || loading) return;
+        setInput('');
+        initiateMessage(query);
     };
 
     const handleKeyDown = (e) => {
@@ -89,7 +100,6 @@ export default function ChatPanel({ onToggle }) {
 
     return (
         <div className="flex flex-col h-full bg-white transition-all overflow-hidden">
-            {/* Header */}
             <header className="px-6 pt-8 pb-6 flex-shrink-0 border-b border-slate-50">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -118,8 +128,7 @@ export default function ChatPanel({ onToggle }) {
                 </div>
             </header>
 
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-2 bg-[#FAFBFF]/30">
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-2 bg-[#FAFBFF]/30 text-slate-800">
                 <div className="flex items-center gap-3 mb-8 opacity-40">
                     <div className="h-px flex-1 bg-slate-200" />
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Communication Serial Established</span>
@@ -131,39 +140,34 @@ export default function ChatPanel({ onToggle }) {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Footer / Input */}
             <footer className="p-6 bg-white border-t border-slate-100">
-                <div className="flex flex-col gap-3">
-                    <div className="relative group">
-                        <textarea
-                            value={input}
-                            onChange={e => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Input query string..."
-                            rows={1}
-                            className="w-full bg-slate-50 text-sm text-slate-800 placeholder-slate-400 border border-slate-200 rounded-2xl px-5 py-4 pr-14 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all resize-none shadow-sm"
-                            style={{ maxHeight: 150 }}
-                        />
-                        <button
-                            onClick={sendMessage}
-                            disabled={!input.trim() || loading}
-                            className="absolute right-3 bottom-3 w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transform active:scale-95 transition-all disabled:opacity-20 shadow-lg shadow-slate-200"
-                        >
-                            <Send size={16} />
-                        </button>
-                    </div>
-
-                    <div className="flex items-center justify-between px-2">
-                        <div className="flex items-center gap-1.5 text-slate-300">
-                            <Terminal size={12} />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">v2.4.0-Stable</span>
-                        </div>
-                        <span className="text-[9px] text-slate-300 font-bold uppercase tracking-widest">
-                            Hold Shift for Newline
-                        </span>
+                <div className="relative group mb-3">
+                    <textarea
+                        value={input}
+                        onChange={e => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Input query string..."
+                        rows={1}
+                        className="w-full bg-slate-50 text-sm text-slate-800 placeholder-slate-400 border border-slate-200 rounded-2xl px-5 py-4 pr-14 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all resize-none shadow-sm"
+                        style={{ maxHeight: 150 }}
+                    />
+                    <button
+                        onClick={sendMessage}
+                        disabled={!input.trim() || loading}
+                        className="absolute right-3 bottom-3 w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transform active:scale-95 transition-all disabled:opacity-20 shadow-lg shadow-slate-200"
+                    >
+                        <Send size={16} />
+                    </button>
+                </div>
+                <div className="flex items-center justify-between px-2">
+                    <div className="flex items-center gap-1.5 text-slate-300">
+                        <Terminal size={12} />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">v2.4.0-Stable</span>
                     </div>
                 </div>
             </footer>
         </div>
     );
-}
+});
+
+export default ChatPanel;

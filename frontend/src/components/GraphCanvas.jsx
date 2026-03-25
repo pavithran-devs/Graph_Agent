@@ -3,25 +3,17 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import { buildElements, buildStylesheet } from '../lib/graphUtils';
 import cytoscape from 'cytoscape';
 
-export default function GraphCanvas({ graphData, onNodeClick, showOverlay }) {
+export default function GraphCanvas({ graphData, onNodeClick, showOverlay, focusId, highlightIds }) {
     const cyRef = useRef(null);
 
     const layout = {
         name: 'cose',
         animate: true,
         animationDuration: 800,
-        animationEasing: 'ease-out',
         randomize: false,
         nodeOverlap: 24,
-        idealEdgeLength: () => 90,
-        edgeElasticity: () => 45,
-        gravity: 0.05,
-        numIter: 2500,
-        initialTemp: 200,
-        coolingFactor: 0.99,
-        minTemp: 1.0,
         fit: true,
-        padding: 40,
+        padding: 60,
     };
 
     const elements = graphData
@@ -37,22 +29,16 @@ export default function GraphCanvas({ graphData, onNodeClick, showOverlay }) {
             const node = evt.target;
             const nodeId = node.id();
 
-            // Reset all
-            cy.elements().removeClass('highlighted faded');
-
-            // Highlight neighbourhood
-            const neighborhood = node.closedNeighborhood();
-            cy.elements().addClass('faded');
-            neighborhood.removeClass('faded').addClass('highlighted');
-            neighborhood.connectedEdges().removeClass('faded').addClass('highlighted');
-
+            // Notify parent
             onNodeClick({
                 id: nodeId,
-                data: node.data(),
-                group: node.data('group'),
                 connections: node.degree(),
-                position: node.renderedPosition(),
+                data: node.data()
             });
+
+            // Local highlighting
+            cy.elements().addClass('faded').removeClass('highlighted');
+            node.closedNeighborhood().removeClass('faded').addClass('highlighted');
         });
 
         cy.on('tap', (evt) => {
@@ -63,7 +49,37 @@ export default function GraphCanvas({ graphData, onNodeClick, showOverlay }) {
         });
     }, [onNodeClick]);
 
-    // Toggle overlay labels
+    // Handle AI Focus & Highlighting
+    useEffect(() => {
+        const cy = cyRef.current;
+        if (!cy) return;
+
+        if (focusId) {
+            const target = cy.$(`#${focusId}`);
+            if (target.length) {
+                cy.animate({
+                    center: { eles: target },
+                    zoom: 1.8,
+                    duration: 1000,
+                    easing: 'ease-out-expo'
+                });
+
+                cy.elements().addClass('faded').removeClass('highlighted');
+                target.closedNeighborhood().removeClass('faded').addClass('highlighted');
+            }
+        }
+    }, [focusId]);
+
+    useEffect(() => {
+        const cy = cyRef.current;
+        if (!cy || !highlightIds || highlightIds.length === 0) return;
+
+        cy.elements().addClass('faded').removeClass('highlighted');
+        highlightIds.forEach(id => {
+            cy.$(`#${id}`).removeClass('faded').addClass('highlighted');
+        });
+    }, [highlightIds]);
+
     useEffect(() => {
         const cy = cyRef.current;
         if (!cy) return;
@@ -80,7 +96,7 @@ export default function GraphCanvas({ graphData, onNodeClick, showOverlay }) {
             layout={layout}
             cy={handleCyInit}
             style={{ width: '100%', height: '100%' }}
-            wheelSensitivity={0.3}
+            wheelSensitivity={0.2}
         />
     );
 }

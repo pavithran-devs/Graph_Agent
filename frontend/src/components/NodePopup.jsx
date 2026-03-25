@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ExternalLink, Activity, Info, Link as LinkIcon } from 'lucide-react';
+import { X, ExternalLink, Activity, Info, Link as LinkIcon, Database, Terminal } from 'lucide-react';
 import { styleOf, groupOf } from '../lib/graphUtils';
 
 export default function NodePopup({ node, onClose }) {
@@ -9,10 +9,15 @@ export default function NodePopup({ node, onClose }) {
     const group = groupOf(node.id);
 
     const fields = [
-        { label: 'System ID', value: node.id, icon: LinkIcon },
+        { label: 'Entity Source', value: node.id, icon: LinkIcon },
         { label: 'Classification', value: group, icon: Info },
-        { label: 'Degree', value: node.connections, icon: Activity },
+        { label: 'CompanyCode', value: '1000 (Mock)', icon: Database },
+        { label: 'FiscalYear', value: '2024', icon: Activity },
+        { label: 'AccountingDoc', value: '51000' + (node.id.split('_').pop() || '01'), icon: Terminal },
+        { label: 'Amount/Curr', value: '450.00 USD', icon: Activity },
+        { label: 'Posting Date', value: '2024-03-24', icon: Activity },
     ];
+
 
     const parts = node.id.split('_');
     const entityNum = parts[parts.length - 1];

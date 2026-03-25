@@ -1,14 +1,12 @@
-// colour and size per entity type (prefix before first underscore)
 export const GROUP_STYLES = {
-    Customer: { bg: '#3b82f6', fg: '#fff', size: 28 },
-    Order: { bg: '#6366f1', fg: '#fff', size: 26 },
-    Delivery: { bg: '#0ea5e9', fg: '#fff', size: 22 },
-    Billing: { bg: '#f59e0b', fg: '#fff', size: 20 },
-    Product: { bg: '#10b981', fg: '#fff', size: 18 },
-    ProductGroup: { bg: '#84cc16', fg: '#fff', size: 16 },
-    ProductType: { bg: '#a3e635', fg: '#333', size: 14 },
-    Address: { bg: '#e879f9', fg: '#fff', size: 16 },
-    CustomerGroup: { bg: '#f472b6', fg: '#fff', size: 16 },
+    Customer: { bg: '#2563EB', fg: '#fff', size: 28 }, // Primary: Blue
+    Order: { bg: '#1D4ED8', fg: '#fff', size: 26 },    // Primary: Blue
+    Product: { bg: '#1E40AF', fg: '#fff', size: 18 },  // Primary: Blue
+
+    Delivery: { bg: '#EF4444', fg: '#fff', size: 22 }, // Secondary: Red
+    Billing: { bg: '#DC2626', fg: '#fff', size: 20 },  // Secondary: Red
+    Address: { bg: '#B91C1C', fg: '#fff', size: 16 },  // Secondary: Red
+    CustomerGroup: { bg: '#900', fg: '#fff', size: 16 }, // Secondary: Red
     Unknown: { bg: '#94a3b8', fg: '#fff', size: 16 },
 };
 
