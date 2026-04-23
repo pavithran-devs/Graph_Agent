@@ -32,7 +32,8 @@
 
 ## 🚀 Deployment & Scaling
 
-The system is fully containerized and optimized for cloud environments like **AWS EC2**.
+The system is fully containerized and optimized for cloud environments like **AWS EC2**. 
+Link : http://13.200.242.62:8000/
 
 ### **Dockerized Workflow**
 We use a multi-stage `Dockerfile` to optimize image size and performance:
